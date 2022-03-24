@@ -5,6 +5,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class UploadService {
@@ -14,15 +17,24 @@ public class UploadService {
     * 底层封装了 HttpServletRequest request中的request.getInputStream()，与它进行融合。
     * */
     public String upload(MultipartFile multipartFile,String dir) {
-        // 1.指定文件上传的目录
-        File file = new File("G:\\JavaSpace\\Java进阶\\fileuploaddownload\\src\\main\\resources\\static\\file\\" + dir);
         try {
+            // 1.获取文件真实名称
+            String originalFilename = multipartFile.getOriginalFilename();
+            // 2.切割文件名后缀
+            String suffix = originalFilename.substring(originalFilename.lastIndexOf("."));
+            // 3.生成唯一的文件名，防止同名文件导致覆盖
+            String newFilename = UUID.randomUUID().toString() + suffix;
+            // 4.跟据日期生成目录
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
+            String datePath = simpleDateFormat.format(new Date());
+            // 5.拼接完整的上传文件路径
+            File file = new File("G:\\JavaSpace\\Java进阶\\fileuploaddownload\\src\\main\\resources\\static\\file\\" + dir, datePath);
             if (!file.exists()) {
                 file.mkdirs();
             }
-            String originalFilename = multipartFile.getOriginalFilename();
-            System.out.println(originalFilename);
-            File targetFile = new File(file, originalFilename);
+            // 6.指定文件上传之后在服务器上的完整文件名
+            File targetFile = new File(file, newFilename);
+            // 7.开始上传
             multipartFile.transferTo(targetFile);
             return "success";
         } catch (IOException e) {

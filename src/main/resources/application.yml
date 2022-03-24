@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+spring:
+  freemarker:
+    cache: false
+    suffix: .html
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
