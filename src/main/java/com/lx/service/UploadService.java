@@ -36,7 +36,9 @@ public class UploadService {
             File targetFile = new File(file, newFilename);
             // 7.开始上传
             multipartFile.transferTo(targetFile);
-            return "success";
+            // 8.返回完整的存储路径
+            String fullPath = "file/" + dir + "/" + datePath + "/" + newFilename;
+            return fullPath;
         } catch (IOException e) {
             e.printStackTrace();
             return "error";
