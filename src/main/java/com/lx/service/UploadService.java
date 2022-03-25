@@ -1,5 +1,6 @@
 package com.lx.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,6 +13,15 @@ import java.util.UUID;
 @Service
 public class UploadService {
 
+    // ip（资源路径）
+    @Value("${file.staticPath}")
+    private String staticPath;
+    // 代理路径
+    @Value("${file.staticPatternPath}")
+    private String staticPatternPath;
+    // 存储路径
+    @Value("${file.uploadFolder}")
+    private String uploadFolder;
     /*
     * MultipartFile 这个对象是springMVC提供的文件上传接受类
     * 底层封装了 HttpServletRequest request中的request.getInputStream()，与它进行融合。
@@ -28,7 +38,7 @@ public class UploadService {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy/MM/dd");
             String datePath = simpleDateFormat.format(new Date());
             // 5.拼接完整的上传文件路径
-            File file = new File("G:\\JavaSpace\\Java进阶\\fileuploaddownload\\src\\main\\resources\\static\\file\\" + dir, datePath);
+            File file = new File(uploadFolder + dir, datePath);
             if (!file.exists()) {
                 file.mkdirs();
             }
@@ -36,8 +46,8 @@ public class UploadService {
             File targetFile = new File(file, newFilename);
             // 7.开始上传
             multipartFile.transferTo(targetFile);
-            // 8.返回完整的存储路径
-            String fullPath = "file/" + dir + "/" + datePath + "/" + newFilename;
+            // 8.返回完整的存储路径（存储到数据库）
+            String fullPath =staticPath + staticPatternPath.substring(0,staticPatternPath.indexOf("*")) + dir + "/" + datePath + "/" + newFilename;
             return fullPath;
         } catch (IOException e) {
             e.printStackTrace();

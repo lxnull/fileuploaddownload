@@ -1,0 +1,4 @@
+file:
+  staticPath: http://localhost:8080
+  staticPatternPath: /uploaded/**
+  uploadFolder: G:\JavaSpace\Java进阶\fileuploaddownload\src\main\resources\static\file-dev\
